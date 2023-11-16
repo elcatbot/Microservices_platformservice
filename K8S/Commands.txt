@@ -1,3 +1,7 @@
+minikube start --driver=virtualbox
+
+function kubectl { minikube kubectl -- $args }
+
  kubectl version    
 
  kubectl apply -f platforms-depl.yaml
