@@ -1,15 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using PlatformService.AsyncDataServices;
-using PlatformService.Data;
-using PlatformService.Dtos;
-using PlatformService.Models;
-using PlatformService.SyncDataServices.Http;
-
 namespace PlatformService.Controllers
 {
     [Route("api/[Controller]")]

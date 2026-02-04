@@ -1,8 +1,3 @@
-using System.Threading.Tasks;
-using AutoMapper;
-using Grpc.Core;
-using PlatformService.Data;
-
 namespace PlatformService.SyncDataServices.Grpc
 {
     public class GrpcPlatformService : GrpcPlatform.GrpcPlatformBase

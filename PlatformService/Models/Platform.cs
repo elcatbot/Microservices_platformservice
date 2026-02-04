@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace PlatformService.Models
 {
     public class Platform
@@ -8,12 +6,12 @@ namespace PlatformService.Models
         public int Id { get; set; }
 
         [Required]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [Required]
-        public string Publisher { get; set; }
+        public string? Publisher { get; set; }
 
         [Required]
-        public string Cost { get; set; }
+        public string? Cost { get; set; }
     }
 }

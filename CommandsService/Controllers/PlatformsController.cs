@@ -1,10 +1,3 @@
-using System;
-using System.Collections.Generic;
-using AutoMapper;
-using CommandsService.Data;
-using CommandsService.DTOs;
-using Microsoft.AspNetCore.Mvc;
-
 namespace CommandsService.Controllers
 {
     [Route("api/c/[Controller]")]

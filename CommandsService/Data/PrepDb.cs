@@ -1,11 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using CommandsService.Models;
-using CommandsService.SyncDataServices.Grpc;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-
 namespace CommandsService.Data
 {
     public static class PrepDb
@@ -16,9 +8,9 @@ namespace CommandsService.Data
             {
                 var grpcClient = serviceScope.ServiceProvider.GetService<IPlatformDataClient>();
 
-                var platforms = grpcClient.ReturnAllPlatforms();
+                var platforms = grpcClient!.ReturnAllPlatforms();
 
-                SeedData(serviceScope.ServiceProvider.GetService<ICommandRepo>(), platforms);
+                SeedData(serviceScope.ServiceProvider.GetService<ICommandRepo>()!, platforms);
             }
         }
 

@@ -1,13 +1,3 @@
-using System;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using CommandsService.EventProcessing;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-
 namespace CommandsService.AsyncDataServices
 {
     /// <summary>
@@ -16,15 +6,15 @@ namespace CommandsService.AsyncDataServices
     public class MessageBusSubscriber : BackgroundService
     {
         private readonly IConfiguration _configuration;
-        private readonly IEventProcessor _eventProcessor;
+        private readonly IServiceScopeFactory _scopeFactory;
         private IConnection _connection;
         private IModel _channel;
         private string _queueName;
 
-        public MessageBusSubscriber(IConfiguration configuration, IEventProcessor eventProcessor)
+        public MessageBusSubscriber(IConfiguration configuration, IServiceScopeFactory scopeFactory)
         {
             _configuration = configuration;
-            _eventProcessor = eventProcessor;
+            _scopeFactory = scopeFactory;
 
             InitializeRabbitMQ();
         }
@@ -56,7 +46,9 @@ namespace CommandsService.AsyncDataServices
                 var body = ea.Body;
                 var notificationMessage = Encoding.UTF8.GetString(body.ToArray());
 
-                _eventProcessor.ProcessEvent(notificationMessage);
+                using var scope = _scopeFactory.CreateScope(); // Creating Scope for EventProcesor for better DI Resolution
+                var eventProcessor = scope.ServiceProvider.GetRequiredService<IEventProcessor>();
+                eventProcessor.ProcessEvent(notificationMessage);
             };
             _channel.BasicConsume(queue: _queueName, autoAck: true, consumer: consumer);
 
