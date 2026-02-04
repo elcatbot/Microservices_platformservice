@@ -1,11 +1,3 @@
-using System;
-using System.Collections.Generic;
-using AutoMapper;
-using CommandsService.Models;
-using Grpc.Net.Client;
-using Microsoft.Extensions.Configuration;
-using PlatformService;
-
 namespace CommandsService.SyncDataServices.Grpc
 {
     public class PlatformDataClient : IPlatformDataClient
@@ -23,7 +15,7 @@ namespace CommandsService.SyncDataServices.Grpc
         {
             Console.WriteLine($"--> Calling GRPC Service {_configuration["GrpcPlatform"]}");
 
-            var channel = GrpcChannel.ForAddress(_configuration["GrpcPlatform"]);
+            var channel = GrpcChannel.ForAddress(_configuration["GrpcPlatform"]!);
             var client = new GrpcPlatform.GrpcPlatformClient(channel);
             var request = new GetAllRequest();
             
@@ -35,7 +27,7 @@ namespace CommandsService.SyncDataServices.Grpc
             catch (System.Exception ex)
             {
                 Console.WriteLine($"--> Could not call GRPC Server {ex.Message}");
-                return null;
+                return null!;
             }
         }
     }

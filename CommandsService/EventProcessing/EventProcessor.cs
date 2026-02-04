@@ -1,11 +1,3 @@
-using System;
-using System.Text.Json;
-using AutoMapper;
-using CommandsService.Data;
-using CommandsService.DTOs;
-using CommandsService.Models;
-using Microsoft.Extensions.DependencyInjection;
-
 namespace CommandsService.EventProcessing
 {
     public class EventProcessor : IEventProcessor

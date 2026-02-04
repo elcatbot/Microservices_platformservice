@@ -1,8 +1,3 @@
-using AutoMapper;
-using CommandsService.DTOs;
-using CommandsService.Models;
-using PlatformService;
-
 namespace CommandsService.Profiles
 {
     public class CommandsProfile : Profile

@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using CommandsService.Models;
-
 namespace CommandsService.Data
 {
     public class CommandRepo : ICommandRepo
@@ -39,7 +34,7 @@ namespace CommandsService.Data
 
         public Command GetCommand(int platformId, int commandId)
         {
-            return _context.Commands.Where(x => x.Id == commandId && x.PlatformId == platformId).FirstOrDefault();
+            return _context.Commands.FirstOrDefault(x => x.Id == commandId && x.PlatformId == platformId)!;
         }
 
         public IEnumerable<Command> GetCommandsForPlatform(int platformId)

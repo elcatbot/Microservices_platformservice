@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace CommandsService.Models
 {
     public class Command
@@ -9,14 +7,14 @@ namespace CommandsService.Models
         public int Id { get; set; }
 
         [Required]
-        public string HowTo { get; set; }
+        public string? HowTo { get; set; }
 
         [Required]
-        public string CommandLine { get; set; }
+        public string? CommandLine { get; set; }
 
         [Required]
         public int PlatformId { get; set; }
 
-        public Platform Platformm { get; set; }
+        public Platform? Platformm { get; set; }
     }
 }

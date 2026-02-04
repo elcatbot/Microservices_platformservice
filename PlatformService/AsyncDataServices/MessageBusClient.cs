@@ -1,17 +1,10 @@
-using System;
-using System.Text;
-using System.Text.Json;
-using Microsoft.Extensions.Configuration;
-using PlatformService.Dtos;
-using RabbitMQ.Client;
-
 namespace PlatformService.AsyncDataServices
 {
     public class MessageBusClient : IMessageBusClient
     {
         private readonly IConfiguration _configuration;
-        private IConnection _connection;
-        private IModel _channel;
+        private IConnection? _connection;
+        private IModel? _channel;
 
         public MessageBusClient(IConfiguration configuration)
         {
@@ -19,14 +12,14 @@ namespace PlatformService.AsyncDataServices
             var factory = new ConnectionFactory()
             {
                 HostName = _configuration["RabbitMQHost"],
-                Port = int.Parse(_configuration["RabbitMQPort"])
+                Port = int.Parse(_configuration["RabbitMQPort"]!)
             };
             try
             {
                 _connection = factory.CreateConnection();
                 _channel = _connection.CreateModel();
                 _channel.ExchangeDeclare(exchange: "trigger", type: ExchangeType.Fanout);
-                _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
+                _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown!;
 
                 Console.WriteLine("--> Connected to Message Bus");
             }
