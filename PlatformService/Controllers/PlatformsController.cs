@@ -42,7 +42,7 @@ namespace PlatformService.Controllers
         public async Task<ActionResult<PlatformReadDto>> CreatePlatform(PlatformCreateDto platformCreateDto)
         {
             var platformModule = _mapper.Map<Platform>(platformCreateDto);
-            _repository.CreatePlatform(platformModule);
+            _repository.CreatePlatform(platformModule!);
             _repository.SaveChanges();
 
             var platformReadDto = _mapper.Map<PlatformReadDto>(platformModule);
@@ -50,7 +50,7 @@ namespace PlatformService.Controllers
             // Send Sync Message 
             try
             {
-                await _commandDataClient.SendPlatformToCommand(platformReadDto);
+                await _commandDataClient.SendPlatformToCommand(platformReadDto!);
             }
             catch (Exception e)
             {
@@ -61,7 +61,7 @@ namespace PlatformService.Controllers
             try
             {
                 var platformPublishedDto = _mapper.Map<PlatformPublishedDto>(platformReadDto);
-                platformPublishedDto.Event = "Platform_Published";
+                platformPublishedDto!.Event = "Platform_Published";
                 _messageBusClient.PublishNewPlatform(platformPublishedDto);
             }
             catch (Exception e)
@@ -69,7 +69,7 @@ namespace PlatformService.Controllers
                 Console.WriteLine($"--> Could not send Asynchronously: {e.Message}");
             }
 
-            return CreatedAtRoute(nameof(GetPlatformById), new { Id = platformReadDto.Id }, platformReadDto);
+            return CreatedAtRoute(nameof(GetPlatformById), new { Id = platformReadDto!.Id }, platformReadDto);
         }
     }
 }
