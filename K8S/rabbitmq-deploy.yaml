@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: rabbitmq-depl
+  name: rabbitmq-deploy
 spec:
   replicas: 1
   selector:
@@ -24,7 +24,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata: 
-  name: rabbitmq-clusterip-srv
+  name: rabbitmq-service
 spec: 
   type: ClusterIP
   selector: 
