@@ -1,0 +1,20 @@
+@Driver.API_HostAddress = http://:5001
+
+GET {{Driver.API_HostAddress}}/api/platforms
+Accept: application/json
+
+
+###
+
+POST {{Driver.API_HostAddress}}/api/platforms
+Content-Type: application/json
+
+{
+  "Name": "Terraform",
+  "Publisher": "Hashicorp",
+  "Cost": "5644"
+}
+
+###
+
+

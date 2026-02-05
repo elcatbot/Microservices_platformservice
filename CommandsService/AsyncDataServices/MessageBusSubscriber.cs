@@ -21,7 +21,7 @@ namespace CommandsService.AsyncDataServices
 
         private void InitializeRabbitMQ()
         {
-            var factory = new ConnectionFactory() { HostName = _configuration["RabbitMQHost"], Port = int.Parse(_configuration["RabbitMQPort"]) };
+            var factory = new ConnectionFactory() { HostName = _configuration["RabbitMQHost"], Port = int.Parse(_configuration["RabbitMQPort"]!) };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
             _channel.ExchangeDeclare(exchange: "trigger", type: ExchangeType.Fanout);

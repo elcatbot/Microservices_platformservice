@@ -22,3 +22,5 @@ global using PlatformService.Models;
 global using PlatformService.SyncDataServices.Http;
 global using Grpc.Core;
 global using PlatformService.SyncDataServices.Grpc;
+global using Polly;
+global using Microsoft.Data.SqlClient;

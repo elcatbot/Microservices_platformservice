@@ -1,0 +1,46 @@
+services:
+  platform-rabbitmq:
+    image: "rabbitmq:4-management"
+    container_name: platform-rabbitmq
+    ports:
+      - "5672:5672"   # RabbitMQ Port
+      - "15672:15672" # Management Plugin UI
+
+  platform-sqlserver:  # <--- THIS name must match the 'Server=' part
+    # image: mcr.microsoft.com/mssql/server:2022 ## SqlServer image works most of the cases
+    image: mcr.microsoft.com/azure-sql-edge ## Use this if running on arm64
+    container_name: platform-sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=YourPassword123
+    ports:
+      - "1433:1433"
+
+  platform-service:
+    build:
+      context: ./PlatformService
+      dockerfile: Dockerfile
+    ports:
+      - "5001:8080"
+    environment:
+      - RabbitMQHost=platform-rabbitmq  # Match the service name above!
+      - RabbitMQPort=5672
+      - ConnectionStrings__PlatformsConn=Server=platform-sqlserver;Initial Catalog=platformsdb;User ID=sa;Password=YourPassword123;TrustServerCertificate=True;
+    depends_on:
+      - platform-sqlserver
+      - platform-rabbitmq
+
+  commands-service:
+    build:
+      context: ./CommandsService
+      dockerfile: Dockerfile
+    ports:
+      - "6001:8080"
+    environment:
+      - RabbitMQHost=platform-rabbitmq  # Match the service name above!
+      - RabbitMQPort=5672
+      - GrpcPlatform=http://platform-service:666
+    depends_on:
+      - platform-service
+      - platform-sqlserver
+      - platform-rabbitmq
