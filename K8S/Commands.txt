@@ -1,6 +1,7 @@
-minikube start --driver=virtualbox
 
-function kubectl { minikube kubectl -- $args }
+docker build -t platform_service .
+docker build -t command_service .
+docker-compose up -d --build
 
  kubectl version    
 

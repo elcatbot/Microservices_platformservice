@@ -1,3 +1,6 @@
+using System.Net.Sockets;
+using Polly;
+
 namespace CommandsService.SyncDataServices.Grpc
 {
     public class PlatformDataClient : IPlatformDataClient
@@ -18,10 +21,26 @@ namespace CommandsService.SyncDataServices.Grpc
             var channel = GrpcChannel.ForAddress(_configuration["GrpcPlatform"]!);
             var client = new GrpcPlatform.GrpcPlatformClient(channel);
             var request = new GetAllRequest();
-            
+
+            // Define a policy: Retry 5 times, doubling the wait time between each try
+            var retryPolicy = Policy
+                .Handle<SocketException>()
+                .Or<InvalidOperationException>() // Sometimes thrown if the DB is in recovery
+                .WaitAndRetry(
+                    retryCount: 5,
+                    sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                    onRetry: (exception, timeSpan, retry, ctx) =>
+                    {
+                        Console.WriteLine($"--> Connection failed (Attempt {retry}). Retrying in {timeSpan.TotalSeconds}s... Error: {exception.Message}");
+                    }
+                );
             try
             {
-                var reply = client.GetAllPlatforms(request);
+                PlatformResponse reply = default!;
+                retryPolicy.Execute(() =>
+                {
+                    reply = client.GetAllPlatforms(request);
+                });
                 return _mapper.Map<IEnumerable<Platform>>(reply.Platform);
             }
             catch (System.Exception ex)

@@ -14,10 +14,22 @@ namespace PlatformService.Data
         {
             if (isProd)
             {
+                // Define a policy: Retry 5 times, doubling the wait time between each try
+                var retryPolicy = Policy
+                    .Handle<SqlException>()
+                    .Or<InvalidOperationException>() // Sometimes thrown if the DB is in recovery
+                    .WaitAndRetry(
+                        retryCount: 5,
+                        sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                        onRetry: (exception, timeSpan, retry, ctx) =>
+                        {
+                            Console.WriteLine($"--> Connection failed (Attempt {retry}). Retrying in {timeSpan.TotalSeconds}s... Error: {exception.Message}");
+                        }
+                    );
                 Console.WriteLine("--> Attempting to apply migrations");
                 try
                 {
-                    context.Database.Migrate();
+                    retryPolicy.Execute(() => context.Database.Migrate());
                 }
                 catch (Exception ex)
                 {
