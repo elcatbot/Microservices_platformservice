@@ -24,8 +24,7 @@ namespace CommandsService.SyncDataServices.Grpc
 
             // Define a policy: Retry 5 times, doubling the wait time between each try
             var retryPolicy = Policy
-                .Handle<SocketException>()
-                .Or<InvalidOperationException>() // Sometimes thrown if the DB is in recovery
+                .Handle<Exception>()
                 .WaitAndRetry(
                     retryCount: 5,
                     sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),

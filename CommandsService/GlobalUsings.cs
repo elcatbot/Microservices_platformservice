@@ -25,3 +25,4 @@ global using RabbitMQ.Client;
 global using RabbitMQ.Client.Events;
 global using Microsoft.OpenApi;
 global using CommandsService.AsyncDataServices;
+global using Polly;

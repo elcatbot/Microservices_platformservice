@@ -23,9 +23,14 @@ services:
     ports:
       - "5001:8080"
     environment:
+      - CommandService=http://commands-service:8080/api/c/platforms,
       - RabbitMQHost=platform-rabbitmq  # Match the service name above!
       - RabbitMQPort=5672
       - ConnectionStrings__PlatformsConn=Server=platform-sqlserver;Initial Catalog=platformsdb;User ID=sa;Password=YourPassword123;TrustServerCertificate=True;
+      - Kestrel__Endpoints__Grpc__Protocols=Http2
+      - Kestrel__Endpoints__Grpc__Url=http://platform-service:666
+      - Kestrel__Endpoints__webApi__Protocols=Http1
+      - Kestrel__Endpoints__webApi__Url=http://platform-service:8080
     depends_on:
       - platform-sqlserver
       - platform-rabbitmq

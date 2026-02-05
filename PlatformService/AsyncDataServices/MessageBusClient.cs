@@ -32,7 +32,7 @@ namespace PlatformService.AsyncDataServices
         public void PublishNewPlatform(PlatformPublishedDto platformPublishedDto)
         {
             var message = JsonSerializer.Serialize(platformPublishedDto);
-            if (_connection.IsOpen)
+            if (_connection!.IsOpen)
             {
                 Console.WriteLine("--> RabbitMQ Connection Open, Sending message...");
                 SendMessage(message);
@@ -54,10 +54,10 @@ namespace PlatformService.AsyncDataServices
         public void Dispose()
         {
             Console.WriteLine($"--> MessageBus Disposed");
-            if(_channel.IsOpen)
+            if(_channel!.IsOpen)
             {
                 _channel.Close();
-                _connection.Close();
+                _connection!.Close();
             }
         }
 

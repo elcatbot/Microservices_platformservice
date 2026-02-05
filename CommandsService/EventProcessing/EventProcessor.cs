@@ -29,7 +29,7 @@ namespace CommandsService.EventProcessing
             Console.WriteLine("--> Determining Event");
 
             var eventype = JsonSerializer.Deserialize<GenericEventDto>(notificationMessage);
-            switch (eventype.Event)
+            switch (eventype!.Event)
             {
                 case "Platform_Published":
                     Console.WriteLine("--> Platform Published Event Detected");

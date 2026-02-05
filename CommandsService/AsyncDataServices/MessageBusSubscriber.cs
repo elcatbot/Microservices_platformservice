@@ -7,9 +7,9 @@ namespace CommandsService.AsyncDataServices
     {
         private readonly IConfiguration _configuration;
         private readonly IServiceScopeFactory _scopeFactory;
-        private IConnection _connection;
-        private IModel _channel;
-        private string _queueName;
+        private IConnection? _connection;
+        private IModel? _channel;
+        private string? _queueName;
 
         public MessageBusSubscriber(IConfiguration configuration, IServiceScopeFactory scopeFactory)
         {
@@ -21,16 +21,31 @@ namespace CommandsService.AsyncDataServices
 
         private void InitializeRabbitMQ()
         {
-            var factory = new ConnectionFactory() { HostName = _configuration["RabbitMQHost"], Port = int.Parse(_configuration["RabbitMQPort"]!) };
-            _connection = factory.CreateConnection();
-            _channel = _connection.CreateModel();
-            _channel.ExchangeDeclare(exchange: "trigger", type: ExchangeType.Fanout);
-            _queueName = _channel.QueueDeclare().QueueName;
-            _channel.QueueBind(queue: _queueName, exchange: "trigger", routingKey: "");
+            var retryPolicy = Policy
+                    .Handle<RabbitMQ.Client.Exceptions.BrokerUnreachableException>()
+                    .Or<Exception>() 
+                    .WaitAndRetry(
+                        retryCount: 5,
+                        sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                        onRetry: (exception, timeSpan, retry, ctx) =>
+                        {
+                            Console.WriteLine($"--> Connection failed (Attempt {retry}). Retrying in {timeSpan.TotalSeconds}s... Error: {exception.Message}");
+                        }
+                    );
 
-            Console.WriteLine("--> Listening on the Message Bus...");
+            retryPolicy.Execute(() =>
+            {
+                var factory = new ConnectionFactory() { HostName = _configuration["RabbitMQHost"], Port = int.Parse(_configuration["RabbitMQPort"]!) };
+                _connection = factory.CreateConnection();
+                _channel = _connection.CreateModel();
+                _channel.ExchangeDeclare(exchange: "trigger", type: ExchangeType.Fanout);
+                _queueName = _channel.QueueDeclare().QueueName;
+                _channel.QueueBind(queue: _queueName, exchange: "trigger", routingKey: "");
 
-            _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
+                Console.WriteLine("--> Listening on the Message Bus...");
+
+                _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown!;
+            });
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -62,10 +77,10 @@ namespace CommandsService.AsyncDataServices
 
         public override void Dispose()
         {
-            if (_channel.IsOpen)
+            if (_channel!.IsOpen)
             {
                 _channel.Close();
-                _connection.Close();
+                _connection!.Close();
             }
             base.Dispose();
         }
