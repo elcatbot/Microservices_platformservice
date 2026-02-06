@@ -1,20 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata: 
-  name: mssql-depl
+  name: sqlserver-deploy
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mssql
+      app: sqlserver
   template:
     metadata:
       labels:
-        app: mssql
+        app: sqlserver
     spec:
       containers:
-        - name: mssql
-          image: mcr.microsoft.com/mssql/server:2017-latest
+        - name: sqlserver
+          # image: mcr.microsoft.com/mssql/server:2022
+          image: mcr.microsoft.com/azure-sql-edge ## Use this if running on arm64
           ports:
             - containerPort: 1433
           env:
@@ -25,26 +26,26 @@ spec:
           - name: SA_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: mssql
+                name: sqlserver-secrets
                 key: SA_PASSWORD
           volumeMounts:
           - mountPath: /var/opt/mssql/data
-            name: mssqldb
+            name: sqlserverdb
       volumes:
-      - name: mssqldb
+      - name: sqlserverdb
         persistentVolumeClaim:
-          claimName: mssql-claim
+          claimName: sqlserver-claim
 ---
 apiVersion: v1
 kind: Service
 metadata: 
-  name: mssql-clusterip-srv
+  name: sqlserver-service # This is the "Server=" name in your API connection string
 spec: 
   type: ClusterIP
   selector: 
-    app: mssql
+    app: sqlserver
   ports:
-  - name: mssql
+  - name: sqlserver
     protocol: TCP
     port: 1433
     targetPort: 1433
@@ -52,11 +53,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata: 
-  name: mssql-loadbalancer
+  name: sqlserver-loadbalancer
 spec: 
   type: LoadBalancer
   selector: 
-    app: mssql
+    app: sqlserver
   ports:
   - protocol: TCP
     port: 1433
