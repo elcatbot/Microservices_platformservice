@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="360" viewBox="0 0 900 360">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#05264c"/>
+    </marker>
+    <style>
+      .box { fill:#f3f4f6; stroke:#05264c; stroke-width:1.4; rx:6; }
+      .label { font:13px Arial, Helvetica, sans-serif; fill:#05264c; }
+    </style>
+  </defs>
+
+  <rect x="40" y="30" width="220" height="110" class="box" />
+  <text x="150" y="60" class="label" text-anchor="middle">Infrastructure (Namespace)</text>
+  <text x="150" y="84" class="label" text-anchor="middle">mssql StatefulSet + PVC</text>
+  <text x="150" y="102" class="label" text-anchor="middle">rabbitmq Deployment</text>
+
+  <rect x="320" y="30" width="220" height="110" class="box" />
+  <text x="430" y="60" class="label" text-anchor="middle">platforms-deployment</text>
+  <text x="430" y="84" class="label" text-anchor="middle">Service + Pod(s)</text>
+
+  <rect x="600" y="30" width="220" height="110" class="box" />
+  <text x="710" y="60" class="label" text-anchor="middle">commands-deployment</text>
+  <text x="710" y="84" class="label" text-anchor="middle">Service + Pod(s)</text>
+
+  <rect x="320" y="190" width="500" height="80" class="box" />
+  <text x="570" y="225" class="label" text-anchor="middle">ingress / external traffic → services</text>
+
+  <line x1="260" y1="90" x2="320" y2="90" stroke="#05264c" stroke-width="2" marker-end="url(#arrow)" />
+  <line x1="540" y1="90" x2="600" y2="90" stroke="#05264c" stroke-width="2" marker-end="url(#arrow)" />
+  <line x1="570" y1="140" x2="570" y2="190" stroke="#05264c" stroke-width="2" marker-end="url(#arrow)" />
+</svg>

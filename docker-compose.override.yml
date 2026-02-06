@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  platform-service:
+    env_file:
+      - .env
+    ports:
+      - "5000:8080" # map container webApi port to host 5000 for local dev
+    volumes:
+      - ./PlatformService:/app/PlatformService:cached
+    # optional: override command to enable developer watch mode if Dockerfile supports it
+    # command: ["dotnet", "watch", "run", "--project", "PlatformService/PlatformService.csproj"]
+
+  commands-service:
+    env_file:
+      - .env
+    ports:
+      - "6000:8080" # map container webApi port to host 6000 for local dev
+    volumes:
+      - ./CommandsService:/app/CommandsService:cached
+    # command: ["dotnet", "watch", "run", "--project", "CommandsService/CommandsService.csproj"]

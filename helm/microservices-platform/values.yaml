@@ -1,0 +1,31 @@
+replicaCount: 1
+
+platform:
+  image: "myrepo/platformservice:latest"
+  replicaCount: 1
+  service:
+    port: 8080
+  containerPort: 8080
+  env: {}
+
+commands:
+  image: "myrepo/commandsservice:latest"
+  replicaCount: 1
+  service:
+    port: 8080
+  containerPort: 8080
+  env: {}
+
+rabbitmq:
+  image: "rabbitmq:3-management"
+  replicaCount: 1
+  service:
+    port: 5672
+    managementPort: 15672
+
+mssql:
+  enabled: true
+  saPassword: "YourPassword123"
+  database: "platformsdb"
+
+imagePullSecrets: []

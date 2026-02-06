@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="220" viewBox="0 0 900 220">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0f172a"/>
+    </marker>
+    <style>
+      .box { fill:#fff; stroke:#0f172a; stroke-width:1.2; rx:6; }
+      .label { font:13px Arial, Helvetica, sans-serif; fill:#0f172a; }
+    </style>
+  </defs>
+
+  <rect x="30" y="40" width="150" height="60" class="box" />
+  <text x="105" y="78" text-anchor="middle" class="label">PlatformService</text>
+
+  <rect x="360" y="20" width="180" height="100" class="box" />
+  <text x="450" y="60" class="label" text-anchor="middle">RabbitMQ</text>
+  <text x="450" y="80" class="label" text-anchor="middle" font-size="12">exchange / queues</text>
+
+  <rect x="660" y="40" width="150" height="60" class="box" />
+  <text x="735" y="78" class="label" text-anchor="middle">CommandsService</text>
+
+  <!-- arrows -->
+  <line x1="180" y1="70" x2="360" y2="70" stroke="#0f172a" stroke-width="2" marker-end="url(#arrow)" />
+  <line x1="540" y1="70" x2="660" y2="70" stroke="#0f172a" stroke-width="2" marker-end="url(#arrow)" />
+
+  <text x="250" y="50" class="label">Publish: Platform_Published {Id,Name,Event}</text>
+  <text x="500" y="120" class="label">Subscriber deserializes `PlatformPublishedDto` and stores platform metadata</text>
+</svg>
